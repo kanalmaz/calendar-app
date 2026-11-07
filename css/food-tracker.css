@@ -1,0 +1,315 @@
+/* ── Food Section ── */
+.food-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1 1 0;
+    min-height: 0;
+}
+
+.food-section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 4px;
+}
+
+.food-meal-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    flex: 1;
+}
+
+.food-add-img-btn {
+    background: none;
+    border: 1.5px dashed #c8cdd2;
+    color: #888;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    white-space: nowrap;
+}
+.food-add-img-btn:hover {
+    border-color: #4a7fd4;
+    color: #4a7fd4;
+    background: #eef3ff;
+}
+
+/* ── Image Grid ── */
+.food-images-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    overflow-y: auto;
+    min-height: 0;
+    align-content: flex-start;
+}
+.food-images-grid::-webkit-scrollbar {
+    display: none;
+}
+
+.food-img-item {
+    position: relative;
+    width: 148px;
+    height: 148px;
+    border-radius: 0;
+    overflow: hidden;
+    border: 1.5px solid #edf0f2;
+    flex-shrink: 0;
+    cursor: default;
+}
+
+.food-img-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.2s;
+}
+.food-img-item:hover img { transform: scale(1.04); }
+
+.food-img-del {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(0,0,0,0.45);
+    color: #fff;
+    border: none;
+    border-radius: 0;
+    width: 20px;
+    height: 20px;
+    font-size: 13px;
+    line-height: 20px;
+    text-align: center;
+    cursor: pointer;
+    display: none;
+    padding: 0;
+    transition: background 0.15s;
+}
+.food-img-item:hover .food-img-del { display: block; }
+.food-img-del:hover { background: rgba(220,50,50,0.8); }
+
+/* ── Food Image Modal (Upload / URL) ── */
+.food-img-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 25000;
+    align-items: center;
+    justify-content: center;
+    animation: diaryFadeIn 0.15s ease;
+}
+.food-img-modal.active { display: flex; }
+
+.food-img-modal-box {
+    background: #fff;
+    border-radius: 14px;
+    padding: 28px 32px;
+    width: 340px;
+    box-shadow: 0 16px 50px rgba(0,0,0,0.22);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.food-img-modal-title {
+    display: none;
+}
+
+.food-img-modal-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.food-img-upload-label {
+    display: inline-block;
+    background: #f1f3f5;
+    border: none;
+    color: #495057;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+    text-align: center;
+}
+.food-img-upload-label:hover { background: #e9ecef; }
+
+.food-img-modal-section input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 16px;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 16px;
+    color: #495057;
+    outline: none;
+    transition: border-color 0.15s;
+}
+.food-img-modal-section input[type="text"]:focus { border-color: #ced4da; }
+
+.food-img-modal-section button {
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.food-img-modal-section button:hover { background: #333; }
+
+.food-img-modal-divider {
+    display: none;
+}
+
+.food-img-modal-cancel {
+    background: none;
+    border: none;
+    color: #adb5bd;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: color 0.15s;
+    margin-top: 4px;
+}
+.food-img-modal-cancel:hover { color: #868e96; }
+
+/* ── Two-Column Layout ── */
+.food-columns {
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* ── Weekly Checklist ── */
+
+.food-weekly-date {
+    font-size: 11px;
+    font-weight: 500;
+    color: #888;
+    margin-left: auto;
+}
+.food-checklist-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+    overflow-y: auto;
+    min-height: 0;
+    flex: 1;
+}
+.food-checklist-container::-webkit-scrollbar {
+    display: none;
+}
+.fc-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid #edf0f2;
+}
+.fc-item:last-child { border-bottom: none; }
+.fc-item-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 140px;
+    flex-shrink: 0;
+}
+.fc-item-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #111;
+}
+.fc-item-delete {
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 0.15s;
+    line-height: 1;
+    padding: 0;
+}
+.fc-item-delete:hover { color: #ff4d4f; }
+.fc-boxes {
+    display: grid;
+    grid-template-columns: repeat(3, 24px);
+    gap: 8px;
+    justify-content: end;
+    flex: 1;
+}
+.fc-box {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    border: 2px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: transparent;
+}
+.fc-box:hover { border-color: #bbb; }
+.fc-box.checked {
+    background: #111;
+    border-color: #111;
+    color: #fff;
+}
+.fc-box.checked::after {
+    content: '✓';
+    font-size: 14px;
+    font-weight: bold;
+}
+.food-checklist-add-form {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid #edf0f2;
+}
+.fc-add-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-end;
+}
+.fc-input {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+}
+.fc-input-name {
+    flex: 1;
+}
+.fc-input:focus { border-color: #111; }
+.fc-input.fc-number { width: 44px; text-align: center; }
+.fc-times-label { font-size: 12px; color: #555; }

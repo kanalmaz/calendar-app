@@ -1,0 +1,604 @@
+/* ── Sliding Side Menu ────────────────────────────────────────── */
+.sliding-side-menu {
+    position: absolute;
+    right: 260px; /* Fixed exactly on the line separating tasks and clocks */
+    top: 20px;    /* Top right square is 11 o'clock */
+    display: flex;
+    flex-direction: row-reverse; /* visually [Pull] [Content] */
+    align-items: center;
+    z-index: 100;
+}
+
+.sliding-menu-content {
+    width: 0;
+    background: transparent;
+    border: 1px solid transparent;
+    border-right: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    overflow: hidden;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s;
+    border-radius: 8px 0 0 8px;
+}
+
+.sliding-menu-content.open {
+    width: 48px;
+    padding: 16px 0;
+    background: #fff;
+    border-color: #edf0f2;
+    box-shadow: -2px 2px 8px rgba(0,0,0,0.05);
+}
+
+.sliding-menu-pull {
+    width: 18px;
+    height: 46px;
+    background: #fff;
+    border: 1px solid #edf0f2;
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    box-shadow: -2px 0 4px rgba(0,0,0,0.05);
+    margin-right: -1px; /* Overlaps the left border of content when open */
+    z-index: 10;
+    transition: background 0.2s;
+}
+
+.sliding-menu-pull:hover {
+    background: #fafafc;
+}
+
+.sliding-menu-pull .dash {
+    width: 4px;
+    height: 2px;
+    background: #ccc;
+    border-radius: 1px;
+}
+
+.sliding-menu-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sliding-menu-content.open .sliding-menu-btn {
+    opacity: 1;
+    transition-delay: 0.15s;
+}
+
+.sliding-menu-btn:hover {
+    transform: scale(1.2);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DIARY POPUP — light mode
+═══════════════════════════════════════════════════════════════ */
+
+.diary-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(4px);
+    z-index: 20000;
+    align-items: center;
+    justify-content: center;
+    animation: diaryFadeIn 0.18s ease;
+}
+.diary-overlay.active { display: flex; }
+
+@keyframes diaryFadeIn { from { opacity:0; } to { opacity:1; } }
+
+.diary-panel {
+    background: #ffffff;
+    width: 88vw;
+    max-width: 95vw;
+    height: 88vh;
+    max-height: 95vh;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    resize: both;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.22);
+    animation: diarySlideUp 0.22s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes diarySlideUp {
+    from { transform: translateY(24px); opacity:0; }
+    to   { transform: translateY(0);    opacity:1; }
+}
+
+/* ── Header ── */
+.diary-header {
+    display: flex;
+    align-items: center;
+    padding: 0 16px 0 0;
+    border-bottom: 1px solid #edf0f2;
+    flex-shrink: 0;
+    min-height: 46px;
+    gap: 8px;
+}
+
+.diary-header-nav {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* Page tabs row */
+.diary-page-tabs {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 6px 8px;
+    flex: 1;
+    min-width: 0;
+}
+.diary-page-tabs::-webkit-scrollbar { display: none; }
+
+.diary-page-tab-wrap {
+    display: flex;
+    align-items: center;
+    background: transparent;
+    border-radius: 7px;
+    transition: background 0.15s;
+    margin-right: 2px;
+}
+.diary-page-tab-wrap:hover { background: #f4f4f4; }
+
+/* Individual page tab button */
+.diary-page-tab {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: #888;
+    padding: 5px 8px 5px 12px;
+    border-radius: 7px 0 0 7px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s;
+    flex-shrink: 0;
+}
+.diary-page-tab-wrap:hover .diary-page-tab { color: #333; }
+.diary-page-tab.active { color: #111; font-weight: 600; }
+
+.diary-page-tab-del {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 5px 8px 5px 4px;
+    border-radius: 0 7px 7px 0;
+    transition: color 0.15s;
+}
+.diary-page-tab-del:hover { color: #e55; }
+
+/* Add Page tab button */
+.diary-add-page-tab-btn {
+    background: none;
+    border: 1px dashed #ccc;
+    font-family: inherit;
+    font-size: 12px;
+    color: #aaa;
+    padding: 4px 10px;
+    border-radius: 7px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    flex-shrink: 0;
+}
+.diary-add-page-tab-btn:hover { border-color: #999; color: #555; background: #f8f8f8; }
+
+/* Back button (sub-page mode) */
+.diary-back-btn {
+    display: none;
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 13px;
+    color: #888;
+    cursor: pointer;
+    padding: 5px 12px;
+    border-radius: 7px;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+}
+.diary-back-btn:hover { background: #f0f0f0; color: #111; }
+.diary-back-btn.visible { display: block; }
+
+/* Breadcrumb */
+.diary-breadcrumb {
+    display: none;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: #aaa;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 6px 0;
+}
+.diary-breadcrumb.visible { display: flex; }
+
+.diary-crumb {
+    color: #bbb;
+    cursor: pointer;
+    transition: color 0.15s;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.diary-crumb:hover { color: #555; }
+.diary-crumb-sep { color: #ddd; flex-shrink: 0; }
+.diary-crumb.current { color: #555; cursor: default; }
+
+/* Close button */
+.diary-close-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #bbb;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+}
+.diary-close-btn:hover { background: #f0f0f0; color: #555; }
+
+/* ── Editor View ── */
+.diary-editor-view {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.diary-page-header {
+    padding: 16px 40px 4px;
+    flex-shrink: 0;
+}
+
+.diary-page-title-el {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    line-height: 1.2;
+    word-break: break-word;
+    caret-color: #111;
+    min-height: 34px;
+}
+.diary-page-title-el[contenteditable="true"]:empty::before {
+    content: attr(data-placeholder);
+    color: #ccc;
+    pointer-events: none;
+}
+
+/* ── Toolbar ── */
+.diary-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 5px 40px;
+    border-bottom: 1px solid #edf0f2;
+    flex-shrink: 0;
+}
+
+.diary-fmt-btn {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 13px;
+    color: #aaa;
+    cursor: pointer;
+    padding: 4px 9px;
+    border-radius: 5px;
+    transition: background 0.15s, color 0.15s;
+    min-width: 28px;
+    text-align: center;
+}
+.diary-fmt-btn:hover { background: #f0f0f0; color: #333; }
+
+.diary-toolbar-sep {
+    width: 1px;
+    height: 16px;
+    background: #e8e8e8;
+    margin: 0 4px;
+    flex-shrink: 0;
+}
+
+.diary-add-subpage-btn {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 13px;
+    color: #5a7fc4;
+    cursor: pointer;
+    padding: 4px 9px;
+    border-radius: 5px;
+    transition: background 0.15s, color 0.15s;
+    font-weight: 500;
+}
+.diary-add-subpage-btn:hover { background: #eef3ff; color: #3a5fa0; }
+
+/* ── Editor ── */
+.diary-editor-wrap {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 40px 40px;
+}
+.diary-editor-wrap::-webkit-scrollbar { width: 5px; }
+.diary-editor-wrap::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 3px; }
+
+.diary-editor {
+    outline: none;
+    min-height: 260px;
+    color: #333;
+    font-size: 16px;
+    line-height: 1.75;
+    font-family: inherit;
+    caret-color: #333;
+    word-break: break-word;
+}
+.diary-editor:empty::before { content: "Start writing..."; color: #ccc; pointer-events: none; }
+.diary-editor img { max-width: 100%; border-radius: 6px; margin: 6px 0; display: block; }
+.diary-editor p { margin: 0 0 4px; }
+
+/* ── Inline Page Block ── */
+.diary-page-block {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    margin: 4px;
+    background: #f7f9fa;
+    border: 1px solid #e8eaec;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #4a7fd4;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.15s, border-color 0.15s;
+    user-select: none;
+    -webkit-user-select: none;
+}
+.diary-page-block:hover { background: #eef3ff; border-color: #a0bef5; }
+.diary-block-icon { font-size: 15px; margin-right: 6px; }
+.diary-block-title { flex: 1; }
+.diary-block-del {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 14px;
+    cursor: pointer;
+    margin-left: 6px;
+    padding: 0 4px;
+}
+.diary-block-del:hover { color: #e55; }
+
+/* ── Inline sub-page name prompt ── */
+.diary-subpage-prompt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    background: #f7f9fa;
+    border: 1px solid #a0bef5;
+    border-radius: 8px;
+    margin: 5px 0;
+}
+.diary-subpage-prompt input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #111;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 600;
+}
+.diary-subpage-prompt input::placeholder { color: #bbb; }
+.diary-subpage-prompt-ok {
+    background: #4a7fd4;
+    border: none;
+    color: #fff;
+    font-family: inherit;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+}
+.diary-subpage-prompt-ok:hover { background: #3a5fa0; }
+.diary-subpage-prompt-cancel {
+    background: none;
+    border: none;
+    color: #bbb;
+    font-family: inherit;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.diary-subpage-prompt-cancel:hover { color: #e55; }
+
+/* ═══════════════════════════════════════════════════════════════
+   FOOD TRACKER POPUP
+═══════════════════════════════════════════════════════════════ */
+
+.food-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.38);
+    backdrop-filter: blur(4px);
+    z-index: 19000;
+    align-items: center;
+    justify-content: center;
+    animation: diaryFadeIn 0.18s ease;
+}
+.food-overlay.active { display: flex; }
+
+.food-panel {
+    background: #ffffff;
+    width: 900px;
+    height: 750px;
+    max-width: 95vw;
+    max-height: 95vh;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.22);
+    animation: slideUpFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+}
+
+/* Book Animation Styles */
+.book-container {
+    position: relative;
+    width: 100%;
+    flex: 1;
+    perspective: 2000px;
+    display: flex;
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+.book-page {
+    width: 50%;
+    height: 100%;
+    background: #fff;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.book-page-left {
+    z-index: 1;
+}
+
+.book-page-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 0; /* Below the flipper */
+}
+
+.book-page-flipper {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform-origin: left center;
+    transition: transform 0.7s cubic-bezier(0.645, 0.045, 0.355, 1);
+    z-index: 2;
+}
+
+.book-page-flipper.flipped {
+    transform: rotateY(-180deg);
+}
+
+.flipper-front, .flipper-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    background: #fff;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.flipper-back {
+    transform: rotateY(180deg);
+}
+
+.book-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #fff;
+    border: 1px solid #edf0f2;
+    border-radius: 0;
+    width: 44px;
+    height: 44px;
+    box-sizing: border-box;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+    color: #555;
+}
+.book-nav-btn:hover { background: #f7f9fa; color: #111; transform: translateY(-50%) scale(1.05); }
+.book-nav-prev { left: -44px; border-right: none; }
+.book-nav-next { right: -44px; border-left: none; }
+
+/* LEFT column — three meal slots, each taking exactly 1/3 height */
+.food-col-left {
+    flex: 1;
+    border-right: 1px solid #edf0f2;
+    display: flex;
+    flex-direction: column;
+    padding: 28px;
+    overflow: hidden;
+}
+
+/* Each meal section takes equal 1/3 of the column height */
+.food-col-left .food-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow: hidden;
+}
+
+/* RIGHT column — scrollable, flex-column with add form at bottom */
+.food-col-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 28px;
+    overflow: hidden;
+}
+.food-col-right .food-checklist-container {
+    flex: 1;
+    overflow-y: auto;
+}
+.food-col-right .food-checklist-container::-webkit-scrollbar { width: 4px; }
+.food-col-right .food-checklist-container::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 3px; }

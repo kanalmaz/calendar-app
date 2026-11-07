@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Personal Calendar</title>
+    <link rel="stylesheet" href="css/base-layout.css?v=2">
+    <link rel="stylesheet" href="css/day-view.css?v=2">
+    <link rel="stylesheet" href="css/hover-popup.css?v=2">
+    <link rel="stylesheet" href="css/hour-modal.css?v=2">
+    <link rel="stylesheet" href="css/sliding-menu.css?v=2">
+    <link rel="stylesheet" href="css/food-tracker.css?v=2">
+    <link rel="stylesheet" href="css/cycle-tracker.css?v=2">
+    <link rel="stylesheet" href="css/settings.css?v=1">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!--  MONTHLY VIEW                                                   -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="page-layout" id="monthlyView">
+
+        <div class="sidebar">
+            <div class="sidebar-inner">
+                <h2 id="monthYear">Month Year</h2>
+                <div class="nav-arrows">
+                    <button id="prevBtn">&#8592;</button>
+                    <button id="nextBtn">&#8594;</button>
+                </div>
+
+
+                <!-- Cycle Tracker Controls -->
+                <div class="cycle-controls" id="cycleControls">
+                    <button class="cycle-toggle-btn" id="cycleToggleBtn" title="Toggle cycle phase overlay">🌸</button>
+                    <span class="cycle-phase-label" id="cyclePhaseLabel">Set up cycle tracker</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="calendar-area">
+            <div id="calendarGrid" class="calendar-grid"></div>
+        </div>
+
+        <div class="right-space"></div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!--  DAY VIEW                                                        -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="day-view" id="dayView">
+
+        <!-- Left sidebar -->
+        <div class="day-sidebar">
+            <div class="day-sidebar-inner">
+                <button class="back-to-month-btn" id="backToMonthBtn">&#8592; Month</button>
+
+                <div class="day-info-block">
+                    <div class="day-view-weekday" id="dayViewWeekday">Friday</div>
+                    <div class="day-view-num" id="dayViewNum">18</div>
+                    <div class="day-view-month" id="dayViewMonthYear">April 2026</div>
+                </div>
+
+                <div class="day-nav-row">
+                    <button id="prevDayBtn">&#8592;</button>
+                    <button id="nextDayBtn">&#8594;</button>
+                </div>
+
+                <!-- Photo controls for the day -->
+                <div class="day-photo-row">
+                    <label for="dayPhotoInput" class="day-photo-btn">Upload Photo</label>
+                    <input type="file" id="dayPhotoInput" accept="image/*" style="display:none">
+
+                    <div class="url-input-row">
+                        <input type="text" id="dayPhotoUrl" placeholder="Or paste image URL...">
+                        <button id="setPhotoUrlBtn">Set URL</button>
+                    </div>
+
+                    <button id="removeDayPhotoBtn">Remove Photo</button>
+                </div>
+
+                <!-- Shopping List -->
+                <div class="shopping-section">
+                    <div class="shopping-header" style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <button id="shoppingBackBtn"
+                            style="display:none; background:none; border:none; cursor:pointer; color:#111; font-size:16px; margin-right:8px; line-height:1;">&#8592;</button>
+                        <h3 class="todo-heading" id="shoppingTitle" style="margin-bottom: 0;">Things to Buy</h3>
+                    </div>
+                    <div class="todo-list" id="shoppingList"></div>
+                    <div class="todo-add-row" style="margin-top: 4px;">
+                        <input type="text" id="newShoppingInput" placeholder="Add category...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sliding side menu -->
+        <div class="sliding-side-menu">
+            <div class="sliding-menu-content" id="slidingMenuContent">
+                <button class="sliding-menu-btn" title="Menstrual Cycle">🩸</button>
+                <button class="sliding-menu-btn" title="Food">🍔</button>
+                <button class="sliding-menu-btn" title="Diary" id="diaryBtn">📔</button>
+            </div>
+            <div class="sliding-menu-pull" id="slidingMenuPull">
+                <div class="dash"></div>
+                <div class="dash"></div>
+                <div class="dash"></div>
+            </div>
+        </div>
+
+        <!-- Hour blocks grid section -->
+        <div class="day-events-section">
+            <div class="hour-grid" id="hourGrid"></div>
+        </div>
+
+        <!-- Global To-Do list -->
+        <div class="day-todo-section">
+            <!-- Things to Do Today — day-specific tasks, shown at top, fixed compact size -->
+            <div class="todays-tasks-container">
+                <h3 class="todo-heading">Things to Do Today</h3>
+                <div class="todo-list" id="dayTodoList"></div>
+                <div class="todo-add-row">
+                    <input type="text" id="newDayTodoInput" placeholder="Add task for today...">
+                    <button id="addDayTodoBtn">+</button>
+                </div>
+            </div>
+
+            <!-- General To-Do — takes up all remaining space -->
+            <div class="general-todo-container">
+                <h3 class="todo-heading">To&#8209;Do</h3>
+                <div class="todo-list" id="todoList"></div>
+                <div class="todo-add-row">
+                    <input type="text" id="newTodoInput" placeholder="Add task...">
+                    <button id="addTodoBtn">+</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!--  HOVER POP-UP (Viewer)                                           -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="hover-popup" id="hoverPopup">
+        <div class="hover-popup-left">
+            <div class="hover-image-display" id="hoverImageDisplay"></div>
+        </div>
+        <div class="hover-popup-right">
+            <h4 id="hoverPopupTitle"></h4>
+            <div class="hover-event-list" id="hoverEventList"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!--  HOUR EDIT MODAL (Setup Page)                                    -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="hour-modal" id="hourModal">
+        <div class="hour-modal-content">
+            <h3 id="hourModalTitle">Edit Hour</h3>
+            <div class="hour-modal-split">
+                <!-- User requested Picture on Left, Events on Right -->
+                <div class="hour-modal-left">
+                    <label>Set Picture</label>
+                    <div class="hour-image-preview" id="hourImagePreview"></div>
+                    <label for="hourPhotoInput" class="hour-photo-btn">Upload Photo</label>
+                    <input type="file" id="hourPhotoInput" accept="image/*" style="display:none">
+                    <div style="margin-top:8px;">
+                        <input type="text" id="hourPhotoUrl" placeholder="Or paste image URL...">
+                        <button id="setHourUrlBtn" style="margin-top:4px;">Set URL</button>
+                    </div>
+                    <button id="removeHourPhotoBtn" style="margin-top:12px;">Remove Picture</button>
+                </div>
+                <div class="hour-modal-right">
+                    <label>Events</label>
+                    <div class="hour-events-list" id="hourEventsList"></div>
+                    <div class="hour-event-add">
+                        <input type="text" id="newHourEventText" placeholder="Add an event...">
+                        <button id="addHourEventBtn">+</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Standard form close or save buttons can go here if needed, but clicking outside closes -->
+        </div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!--  DIARY POPUP                                                    -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="diary-overlay" id="diaryOverlay">
+        <div class="diary-panel">
+
+            <!-- Header: tabs on left (root) OR back+breadcrumb (sub-page) -->
+            <div class="diary-header">
+                <div class="diary-header-nav">
+                    <div class="diary-page-tabs" id="diaryPageTabs"></div>
+                    <button class="diary-back-btn" id="diaryBackBtn">&#8592; Back</button>
+                    <nav class="diary-breadcrumb" id="diaryBreadcrumb"></nav>
+                </div>
+            </div>
+
+            <!-- Editor View -->
+            <div class="diary-editor-view" id="diaryEditorView">
+                <div class="diary-page-header">
+                    <div class="diary-page-title-el" id="diaryPageTitleEl" contenteditable="false" spellcheck="true">
+                    </div>
+                </div>
+                <div class="diary-toolbar" id="diaryToolbar">
+                    <button class="diary-fmt-btn" data-cmd="bold" title="Bold"><b>B</b></button>
+                    <button class="diary-fmt-btn" data-cmd="italic" title="Italic"><i>I</i></button>
+                    <button class="diary-fmt-btn" data-cmd="underline" title="Underline"><u>U</u></button>
+                    <div class="diary-toolbar-sep"></div>
+                    <button class="diary-add-subpage-btn" id="diaryAddSubPageBtn">&#128196; Add Sub-page</button>
+                </div>
+                <div class="diary-editor-wrap">
+                    <div class="diary-editor" id="diaryEditor" contenteditable="true" spellcheck="true"></div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!--  FOOD TRACKER POPUP                                              -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="food-overlay" id="foodOverlay">
+        <div class="food-panel" id="foodPanel">
+            <!-- Book Container -->
+            <div class="book-container">
+                <!-- Page 1 (Always Left) -->
+                <div class="book-page book-page-left">
+                    <div class="food-col-left">
+                        <!-- Breakfast -->
+                        <div class="food-section">
+                            <div class="food-section-header">
+                                <span class="food-meal-label">Breakfast</span>
+                                <button class="food-add-img-btn" data-meal="breakfast">+ Add Image</button>
+                            </div>
+                            <div class="food-images-grid" id="foodGrid-breakfast"></div>
+                        </div>
+
+                        <!-- Lunch -->
+                        <div class="food-section">
+                            <div class="food-section-header">
+                                <span class="food-meal-label">Lunch</span>
+                                <button class="food-add-img-btn" data-meal="lunch">+ Add Image</button>
+                            </div>
+                            <div class="food-images-grid" id="foodGrid-lunch"></div>
+                        </div>
+
+                        <!-- Dinner -->
+                        <div class="food-section">
+                            <div class="food-section-header">
+                                <span class="food-meal-label">Dinner</span>
+                                <button class="food-add-img-btn" data-meal="dinner">+ Add Image</button>
+                            </div>
+                            <div class="food-images-grid" id="foodGrid-dinner"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- The Flipping Page -->
+                <div class="book-page-flipper" id="foodFlipper">
+                    <!-- Front (Right Side) -->
+                    <div class="flipper-front">
+                        <div class="food-col-right">
+                            <div class="food-section-header">
+                                <span class="food-meal-label">Weekly Checklist</span>
+                                <span id="foodWeeklyHeader" class="food-weekly-date"></span>
+                            </div>
+                            <div class="food-checklist-container" id="foodChecklistContainer">
+                                <!-- Checklist items render here -->
+                            </div>
+                            
+                            <div class="food-checklist-add-form">
+                                <input type="text" id="fcNewName" class="fc-input fc-input-name" placeholder="Add food (press Enter)">
+                                <div class="fc-add-right">
+                                    <span class="fc-times-label">Times/week:</span>
+                                    <input type="number" id="fcNewTarget" class="fc-input fc-number" value="1" min="1" max="21">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Back (Left Side when flipped) -->
+                    <div class="flipper-back">
+                        <div class="food-col-right" style="border-right: 1px solid #edf0f2;">
+                            <div class="food-section-header">
+                                <span class="food-meal-label" id="ecTitle" contenteditable="true" spellcheck="false" style="outline: none;">Extra Checklist</span>
+                            </div>
+                            <div class="food-checklist-container" id="extraChecklistContainer">
+                                <!-- New Extra Checklist items render here -->
+                            </div>
+                            
+                            <div class="food-checklist-add-form">
+                                <input type="text" id="ecNewName" class="fc-input fc-input-name" placeholder="Add item (press Enter)">
+                                <div class="fc-add-right">
+                                    <span class="fc-times-label">Times/week:</span>
+                                    <input type="number" id="ecNewTarget" class="fc-input fc-number" value="1" min="1" max="21">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 4 (Right Side behind the flipper) -->
+                <div class="book-page book-page-right under-page">
+                    <div style="display:flex; justify-content:center; align-items:center; height:100%; background: #fafbfc;">
+                        <!-- Empty Page for future additions -->
+                    </div>
+                </div>
+                
+            </div> <!-- End of book-container -->
+
+            <!-- Navigation Arrows -->
+            <button class="book-nav-btn book-nav-prev" id="foodPrevBtn" style="display: none;" title="Previous Page">&#8592;</button>
+            <button class="book-nav-btn book-nav-next" id="foodNextBtn" title="Next Page">&#8594;</button>
+
+        </div>
+    </div>
+
+    <!-- Food Image Upload Modal -->
+    <div class="food-img-modal" id="foodImgModal">
+        <div class="food-img-modal-box">
+            <h3 class="food-img-modal-title">Add Food Image</h3>
+            <div class="food-img-modal-section">
+                <label class="food-img-upload-label" for="foodImgFileInput">Upload Photo</label>
+                <input type="file" id="foodImgFileInput" accept="image/*" style="display:none">
+            </div>
+
+            <div class="food-img-modal-section">
+                <input type="text" id="foodImgUrlInput" placeholder="Paste image URL...">
+                <button id="foodImgUrlBtn">Set URL</button>
+            </div>
+            <button class="food-img-modal-cancel" id="foodImgModalCancel">Remove Photo</button>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!--  CYCLE TRACKER SETUP MODAL                                      -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div class="cycle-overlay" id="cycleOverlay">
+        <div class="cycle-modal-box">
+            <div class="cycle-modal-header">
+                <span class="cycle-modal-icon">🌸</span>
+                <h3 class="cycle-modal-title">Cycle Tracker</h3>
+                <button class="cycle-modal-close" id="cycleModalClose">&#10005;</button>
+            </div>
+
+            <div class="cycle-modal-body">
+                <!-- Period start date -->
+                <div class="cycle-field">
+                    <label class="cycle-label" for="cycleStartDate">Period start date</label>
+                    <p class="cycle-hint">When did (or will) your most recent period begin?</p>
+                    <input type="date" id="cycleStartDate" class="cycle-input">
+                </div>
+
+                <!-- Period length -->
+                <div class="cycle-field">
+                    <label class="cycle-label" for="cyclePeriodLength">Period length <span class="cycle-unit">(days)</span></label>
+                    <p class="cycle-hint">How many days does your period typically last?</p>
+                    <div class="cycle-stepper">
+                        <button class="cycle-step-btn" data-target="cyclePeriodLength" data-delta="-1">−</button>
+                        <input type="number" id="cyclePeriodLength" class="cycle-number-input" min="1" max="10" value="5">
+                        <button class="cycle-step-btn" data-target="cyclePeriodLength" data-delta="1">+</button>
+                    </div>
+                </div>
+
+                <!-- Cycle length -->
+                <div class="cycle-field">
+                    <label class="cycle-label" for="cycleCycleLength">Cycle length <span class="cycle-unit">(days)</span></label>
+                    <p class="cycle-hint">Total length of your cycle from start to start.</p>
+                    <div class="cycle-stepper">
+                        <button class="cycle-step-btn" data-target="cycleCycleLength" data-delta="-1">−</button>
+                        <input type="number" id="cycleCycleLength" class="cycle-number-input" min="21" max="45" value="28">
+                        <button class="cycle-step-btn" data-target="cycleCycleLength" data-delta="1">+</button>
+                    </div>
+                </div>
+
+                <!-- Luteal phase length -->
+                <div class="cycle-field">
+                    <label class="cycle-label" for="cycleLutealLength">Luteal phase <span class="cycle-unit">(days)</span></label>
+                    <p class="cycle-hint">Days after ovulation until next period (usually 12–16).</p>
+                    <div class="cycle-stepper">
+                        <button class="cycle-step-btn" data-target="cycleLutealLength" data-delta="-1">−</button>
+                        <input type="number" id="cycleLutealLength" class="cycle-number-input" min="10" max="18" value="14">
+                        <button class="cycle-step-btn" data-target="cycleLutealLength" data-delta="1">+</button>
+                    </div>
+                </div>
+
+                <!-- Past period history -->
+                <div class="cycle-field">
+                    <label class="cycle-label">Past period starts</label>
+                    <p class="cycle-hint">Add previous start dates to improve predictions (optional).</p>
+                    <div class="cycle-history-list" id="cycleHistoryList"></div>
+                    <div class="cycle-history-add">
+                        <input type="date" id="cycleHistoryInput" class="cycle-input" style="flex:1">
+                        <button class="cycle-history-add-btn" id="cycleHistoryAddBtn">+ Add</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cycle-modal-footer">
+                <button class="cycle-save-btn" id="cycleSaveBtn">Save &amp; Track</button>
+                <button class="cycle-delete-btn" id="cycleDeleteBtn">Clear All Data</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app-state.js"></script>
+    <script src="js/cycle-tracker.js"></script>
+    <script src="js/month-view.js"></script>
+    <script src="js/day-view-nav.js"></script>
+    <script src="js/hover-popup.js"></script>
+    <script src="js/day-view-render.js"></script>
+    <script src="js/hour-modal.js"></script>
+    <script src="js/todos.js"></script>
+    <script src="js/day-photo.js"></script>
+    <script src="js/drag-drop.js"></script>
+    <script src="js/sliding-menu.js"></script>
+    <script src="js/diary.js"></script>
+    <script src="js/food-tracker.js?v=2"></script>
+
+    <!-- ⚙️ Settings Gear Button -->
+    <button class="settings-btn" id="settingsBtn" title="Settings">⚙️</button>
+
+    <!-- Settings Modal -->
+    <div class="settings-overlay" id="settingsOverlay">
+        <div class="settings-modal">
+            <button class="settings-close-btn" id="settingsCloseBtn">✕</button>
+            <h3>⚙️ Settings</h3>
+            <p class="settings-subtitle">App settings &amp; data management</p>
+
+            <div class="settings-section">
+                <div class="settings-section-label">Auto Backup</div>
+                <div class="settings-backup-info" id="settingsBackupInfo">
+                    Loading backup info…
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <div class="settings-section-label">Manual Data</div>
+                <button class="settings-action-btn" id="settingsExportBtn">
+                    <span class="btn-icon">📤</span> Export Backup File
+                </button>
+                <label class="settings-action-btn" for="settingsImportInput" style="cursor:pointer; margin-bottom:0;">
+                    <span class="btn-icon">📥</span> Import Backup File
+                </label>
+                <input type="file" id="settingsImportInput" accept=".json" style="display:none">
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ── Settings modal logic ────────────────────────────────────────────────
+    const settingsBtn     = document.getElementById('settingsBtn');
+    const settingsOverlay = document.getElementById('settingsOverlay');
+    const settingsClose   = document.getElementById('settingsCloseBtn');
+    const exportBtn       = document.getElementById('settingsExportBtn');
+    const importInput     = document.getElementById('settingsImportInput');
+    const backupInfo      = document.getElementById('settingsBackupInfo');
+
+    function openSettings() {
+        settingsOverlay.classList.add('open');
+        // Load backup info
+        if (window.electronAPI) {
+            window.electronAPI.listBackups().then(backups => {
+                if (backups && backups.length > 0) {
+                    const latest = backups[0];
+                    const d = new Date(latest.time);
+                    const fmt = d.toLocaleDateString('tr-TR', { day:'2-digit', month:'long', year:'numeric' })
+                              + ' ' + d.toLocaleTimeString('tr-TR', { hour:'2-digit', minute:'2-digit' });
+                    backupInfo.innerHTML = `<strong>Last backup:</strong> ${fmt}<br><strong>Saved copies:</strong> ${backups.length}`;
+                } else {
+                    backupInfo.innerHTML = 'No backups yet. One will be created when you close the app.';
+                }
+            }).catch(() => {
+                backupInfo.innerHTML = 'Could not load backup info.';
+            });
+        } else {
+            backupInfo.innerHTML = 'Backup system not available (running outside Electron).';
+        }
+    }
+
+    function closeSettings() { settingsOverlay.classList.remove('open'); }
+
+    settingsBtn.addEventListener('click', openSettings);
+    settingsClose.addEventListener('click', closeSettings);
+    settingsOverlay.addEventListener('click', (e) => { if (e.target === settingsOverlay) closeSettings(); });
+
+    // Export
+    exportBtn.addEventListener('click', () => {
+        const dataStr = JSON.stringify(appData);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'calendar_backup.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        closeSettings();
+    });
+
+    // Import
+    importInput.addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+            try {
+                const importedData = JSON.parse(ev.target.result);
+                if (importedData && typeof importedData === 'object') {
+                    localStorage.setItem('calendarAppData', JSON.stringify(importedData));
+                    alert('Data imported! The app will now reload.');
+                    window.location.reload();
+                } else {
+                    alert('Invalid backup file format.');
+                }
+            } catch {
+                alert('Error reading backup file.');
+            }
+        };
+        reader.readAsText(file);
+        importInput.value = '';
+    });
+    </script>
+</body>
+
+
+</html>

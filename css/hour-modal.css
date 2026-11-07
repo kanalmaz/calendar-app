@@ -1,0 +1,283 @@
+/* ── Hour Edit Modal (Setup Page) ─────────────────────────────────── */
+.hour-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.hour-modal.active { display: flex; }
+
+.hour-modal-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 16px;
+    width: 600px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+
+.hour-modal-content h3 {
+    margin-top: 0; margin-bottom: 20px;
+    font-size: 20px; color: #111;
+}
+
+.hour-modal-split {
+    display: flex;
+    gap: 24px;
+}
+
+.hour-modal-left, .hour-modal-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.hour-modal-split label {
+    font-weight: 600;
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.hour-image-preview {
+    width: 100%;
+    height: 140px;
+    background: #f1f3f5;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background-size: cover;
+    background-position: center;
+}
+
+.hour-photo-btn {
+    display: block;
+    text-align: center;
+    padding: 8px;
+    background: #111;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.hour-photo-btn:hover { background: #333; }
+
+.hour-modal-left input[type="text"] {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.hour-modal-left button {
+    width: 100%;
+    padding: 8px;
+    background: #f0f0f0;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+}
+.hour-modal-left button:hover { background: #e0e0e0; }
+
+.hour-events-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 10px;
+    min-height: 140px;
+    max-height: 200px;
+}
+
+.hour-event-add {
+    display: flex;
+    gap: 6px;
+}
+
+.hour-event-add input {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+}
+
+.hour-event-add button {
+    width: 34px; height: 34px;
+    background: #111; color: white;
+    border: none; border-radius: 6px;
+    font-size: 18px; cursor: pointer;
+}
+.hour-event-add button:hover { background: #333; }
+
+/* ── Global To-Do Section ──────────────────────────────────────── */
+.day-todo-section {
+    width: 260px;
+    flex-shrink: 0;
+    height: 100vh;
+    border-left: 1px solid #edf0f2;
+    background: #fff;
+    padding: 24px 14px 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.todays-tasks-container {
+    display: flex;
+    flex-direction: column;
+    flex: 2;
+    min-height: 0;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #edf0f2;
+}
+
+.general-todo-container {
+    display: flex;
+    flex-direction: column;
+    flex: 3;
+    min-height: 0;
+    padding-top: 8px;
+}
+
+.todo-heading {
+    font-size: 11px;
+    font-weight: 700;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 6px;
+}
+
+.todo-drag-hint {
+    font-size: 10px;
+    color: #c5cacd;
+    margin-bottom: 10px;
+    font-style: italic;
+}
+
+.todo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    margin-bottom: 14px;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 40px;
+    border-radius: 6px;
+    transition: background 0.15s, outline 0.15s;
+}
+
+.todo-list.todo-list-drag-over {
+    outline: 2px dashed #7da6f5;
+    outline-offset: -2px;
+    background: #eef3ff;
+}
+
+#todaysTasksList .todo-item,
+#todoList .todo-item {
+    cursor: grab;
+}
+
+#todaysTasksList .todo-item:active,
+#todoList .todo-item:active {
+    cursor: grabbing;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    background: #f7f9fa;
+    border: 1px solid #eef0f2;
+    font-size: 13px;
+    color: #333;
+    transition: background 0.1s;
+    cursor: default;
+}
+
+.todo-item:hover { background: #fff; }
+
+.todo-item.done .todo-text {
+    text-decoration: line-through;
+    color: #bbb;
+}
+
+.todo-checkbox {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    flex-shrink: 0;
+    accent-color: #7da6f5;
+}
+
+.todo-text { flex: 1; word-break: break-word; }
+
+.todo-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ddd;
+    font-size: 17px;
+    padding: 0;
+    line-height: 1;
+    opacity: 0;
+    transition: opacity 0.1s, color 0.1s;
+    flex-shrink: 0;
+}
+
+.todo-item:hover .todo-delete { opacity: 1; }
+.todo-delete:hover { color: #e55; }
+
+.todo-add-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.todo-add-row input {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.todo-add-row input:focus { border-color: #999; }
+
+.todo-add-row button {
+    width: 32px;
+    height: 32px;
+    background: #111;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.todo-add-row button:hover { background: #333; }
+
